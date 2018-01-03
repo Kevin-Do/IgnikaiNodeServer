@@ -15,7 +15,7 @@ io.on('connection', function(socket){
 
     //Generate GUID for newly connected player
     var thisPlayerId = shortid.generate();
-    console.log("\n\n~ Connection Created: " +  thisPlayerId + " | Connected to: " + socket.id + " ~");
+    console.log("\n\n~ Connection Created - Player " +  thisPlayerId + " | Connected to socket: " + socket.id + " ~");
 
     //Broadcast spawn action for newly connected player to all connected clients
     socket.broadcast.emit('spawn', {id: thisPlayerId});
@@ -25,9 +25,11 @@ io.on('connection', function(socket){
 
     //Add existing players to newly connected player's session
     players.forEach(function(playerID){
-        if (playerID != thisPlayerId){
-            socket.emit('spawn'), {id: playerID};
+        if(playerID == thisPlayerId){
+            return;
         }
+        console.log("\nAdding Player " + playerID + " to Player " + thisPlayerId + "'s game.");
+        socket.emit('spawn'), {id: playerID};
     });
 
     //Handle movement
@@ -35,14 +37,16 @@ io.on('connection', function(socket){
 
         //Tag id of moving player (newly connected player)
         data.id = thisPlayerId;
-        console.log(data);
+
+        //Decomment for data logging (warning: very heavy)
+        //console.log(data);
 
         //Relay "move" to all connected clients (not this orignating client however)
         socket.broadcast.emit('move', data);
     });
 
     socket.on('disconnect', function(){
-        console.log("\n\n~ Client: " + thisPlayerId + " is Disconnecting. ~");
+        console.log("\n\n~ Player " + thisPlayerId + " is Disconnecting. ~");
 
         //Remove from player management
         var playerIndex = players.indexOf(thisPlayerId);
