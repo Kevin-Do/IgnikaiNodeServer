@@ -1,0 +1,9 @@
+<Title>
+
+Description: <What the commit does in words>
+
+Methodology: <How the commit was made in code>
+
+Relevant Files: <Important files that were worked on>
+
+Relevant Commands: <How to run changes>
